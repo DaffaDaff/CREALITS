@@ -1,0 +1,88 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+
+WindowManager:
+    transition: NoTransition()
+    StartScreen:
+    LoginScreen:
+        
+    
+
+<StartScreen>:
+    name: "startScreen"
+
+    Image:
+        source: ("asset/img/bg.png")
+    
+    GridLayout:
+        cols: 3
+        Widget:
+            
+        GridLayout:
+            cols: 1
+            size_hint_x: None
+            width: 350
+            padding: 0
+
+            Widget:
+                size_hint_y: None
+                height: 36
+
+            Label:
+                text: 'Welcome to CREALITS'
+                color: (0, 0, 0)
+                font_size: 35
+
+            Widget:
+                size_hint_y: None
+                height: 35
+
+            RoundedButton:
+                background_color: (1,1,1, 0)
+                size_hint_y: 0.7
+                text: 'Log In'
+                border: (20, 20, 20, 20)
+                color: (0,0,0)
+                on_release:
+                    app.root.current = "loginScreen"
+
+            Widget:
+                size_hint_y: None
+                height: 20
+            
+            RoundedButton:
+                background_color: (1,1,1, 0)
+                size_hint_y: 0.7
+                text: 'Sign Up'
+                border: (20, 20, 20, 20)
+                color: (0,0,0)
+                
+
+            Widget:
+                
+
+        Widget:
+            
+<LoginScreen>
+    name: "loginScreen"
+    canvas.before:
+        Color: 
+            rgba: 85/255, 214/255, 190/255, 1
+        Rectangle: 
+            pos: self.pos
+            size: self.size
+
+    GridLayout:
+        Button:
+            text: 'Go Back'
+            on_release: app.root.current = "startScreen"
+
+<RoundedButton@Button>
+    background_normal: ''
+    canvas.before:
+        Color: 
+            rgb: root.background_color
+            
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.border
