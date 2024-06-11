@@ -25,7 +25,7 @@ class LoginScreen(Screen):
     pass
 
 from kivy.lang import Builder
-kv = Builder.load_file('builder/main.kv')
+kv = Builder.load_file('app.kv')
 
 from kivy.app import App
 
