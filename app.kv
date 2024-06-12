@@ -71,10 +71,106 @@ WindowManager:
             pos: self.pos
             size: self.size
 
-    GridLayout:
-        Button:
-            text: 'Go Back'
-            on_release: app.root.current = "startScreen"
+    BoxLayout
+        id: login_layout
+        orientation: 'vertical'
+        padding: [5,5,5,5]
+        spacing: 0
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.2
+            spacing: 5
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.2
+
+                RoundedButton:
+                    background_color: (252/255,100/255,113/255, 0)
+                    size_hint_y: 0.9
+                    text: 'Back'
+                    border: (15, 15, 5, 15)
+                    color: (1,1,1)
+                    on_release:
+                        app.root.current = "startScreen"
+
+                Widget:
+                    size_hint_y: 0.1
+
+            Label:
+                text: 'Login'
+                font_size: 24
+                color: [0, 0, 0, 1]
+                canvas.before:
+                    Color:
+                        rgba: 255/255, 255/255, 255/255, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15, 15, 0, 0]
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 255/255, 255/255, 255/255, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [15, 0, 15, 15]
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                Label:
+                    text: 'Username'
+                    font_size: 18
+                    color: [0,0,0,1]
+                    halign: 'left'
+                    text_size: root.width-40, 20
+
+                TextInput:
+                    id: login
+                    multiline:False
+                    font_size: 18
+                    size: root.width-40, 20
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    text: 'Password'
+                    color: [0,0,0,1]
+                    halign: 'left'
+                    font_size: 18
+                    text_size: root.width-40, 20
+
+                TextInput:
+                    id: password
+                    multiline:False
+                    password:True
+                    font_size: 28
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                Widget:
+                    size_hint_x: 0.25
+
+                RoundedButton:
+                    background_color: (125/255,91/255,166/255, 0)
+                    size_hint_x: 0.5
+                    size_hint_y: 0.8
+                    text: 'Login'
+                    border: (10, 10, 10, 10)
+                    color: (1,1,1)
+                    font_size: 24
+
+                    on_release: root.do_login(login.text, password.text)
+                
+                Widget:
+                    size_hint_x: 0.25
 
 <RoundedButton@Button>
     background_normal: ''
