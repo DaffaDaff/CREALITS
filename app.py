@@ -16,10 +16,15 @@ width = 480 *scale
 height = 320 *scale
 
 from kivy.config import Config
+import configparser
+
+conf = configparser.ConfigParser()
+conf.read('crealits.ini')
+
 Config.set('graphics', 'width', f'{width}')
 Config.set('graphics', 'height', f'{height}')
 Config.set('graphics', 'resizable', False) 
-Config.set('graphics', 'fullscreen', 0)
+Config.set('graphics', 'fullscreen', conf['Default']['Fullscreen'])
 
 from kivy.core.text import LabelBase
 LabelBase.register(name='Inter', 
@@ -236,4 +241,5 @@ class CrealitsApp(App):
     def build(self):
         return kv
 
-CrealitsApp().run()
+if __name__ == "__main__":
+    CrealitsApp().run()
