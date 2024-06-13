@@ -4,6 +4,9 @@ WindowManager:
     transition: NoTransition()
     StartScreen:
     LoginScreen:
+    SignupScreen:
+    GenderScreen:
+    HomeScreen:
         
     
 
@@ -11,7 +14,7 @@ WindowManager:
     name: "startScreen"
 
     Image:
-        source: ("asset/img/bg.png")
+        source: ("asset/img/Start_bg.png")
     
     GridLayout:
         cols: 3
@@ -25,16 +28,20 @@ WindowManager:
 
             Widget:
                 size_hint_y: None
-                height: 36
+                height: 20
 
             Label:
-                text: 'Welcome to CREALITS'
+                text: 'Welcome to'
                 color: (0, 0, 0)
-                font_size: 35
+                font_size: 40
+                font_name: 'Inter-Bold'
+
+            Image:
+                source: ("asset/img/Logo.png")
 
             Widget:
                 size_hint_y: None
-                height: 35
+                height: 10
 
             RoundedButton:
                 background_color: (1,1,1, 0)
@@ -42,6 +49,8 @@ WindowManager:
                 text: 'Log In'
                 border: (20, 20, 20, 20)
                 color: (0,0,0)
+                font_name: 'Inter-SemiBold'
+                font_size: 15
                 on_release:
                     app.root.current = "loginScreen"
 
@@ -55,7 +64,10 @@ WindowManager:
                 text: 'Sign Up'
                 border: (20, 20, 20, 20)
                 color: (0,0,0)
-                
+                font_name: 'Inter-SemiBold'
+                font_size: 15
+                on_release:
+                    app.root.current = "signupScreen"
 
             Widget:
                 
@@ -74,7 +86,7 @@ WindowManager:
     BoxLayout
         id: login_layout
         orientation: 'vertical'
-        padding: [5,5,5,5]
+        padding: [7,7,7,7]
         spacing: 0
 
         BoxLayout:
@@ -92,6 +104,7 @@ WindowManager:
                     text: 'Back'
                     border: (15, 15, 5, 15)
                     color: (1,1,1)
+                    font_name: 'Inter-Medium'
                     on_release:
                         app.root.current = "startScreen"
 
@@ -100,8 +113,9 @@ WindowManager:
 
             Label:
                 text: 'Login'
-                font_size: 24
+                font_size: 30
                 color: [0, 0, 0, 1]
+                font_name: 'Inter-SemiBold'
                 canvas.before:
                     Color:
                         rgba: 255/255, 255/255, 255/255, 1
@@ -123,54 +137,321 @@ WindowManager:
 
             BoxLayout:
                 orientation: 'vertical'
+                padding: [0, 0, 0, 5]
+                size_hint_y: 0.3
 
                 Label:
                     text: 'Username'
                     font_size: 18
-                    color: [0,0,0,1]
+                    font_name: 'Inter-Medium'
+                    color: [0.4,0.4,0.4,1]
                     halign: 'left'
                     text_size: root.width-40, 20
 
-                TextInput:
-                    id: login
-                    multiline:False
-                    font_size: 18
-                    size: root.width-40, 20
+                BoxLayout:
+                    padding: [10,0,10,0]
+                    TextInput:
+                        id: login
+                        multiline:False
+                        font_size: 18
 
             BoxLayout:
                 orientation: 'vertical'
+                padding: [0, 5, 0, 0]
+                size_hint_y: 0.3
+                
                 Label:
                     text: 'Password'
-                    color: [0,0,0,1]
+                    color: [0.4,0.4,0.4,1]
                     halign: 'left'
                     font_size: 18
+                    font_name: 'Inter-Medium'
                     text_size: root.width-40, 20
 
-                TextInput:
-                    id: password
-                    multiline:False
-                    password:True
-                    font_size: 28
+                BoxLayout:
+                    padding: [10,0,10,0]
+                    TextInput:
+                        id: password
+                        multiline:False
+                        password:True
+                        font_size: 18
 
             BoxLayout:
                 orientation: 'horizontal'
-
-                Widget:
-                    size_hint_x: 0.25
+                size_hint_y: 0.3
+                padding: [130, 15, 130, 15]
 
                 RoundedButton:
                     background_color: (125/255,91/255,166/255, 0)
                     size_hint_x: 0.5
                     size_hint_y: 0.8
                     text: 'Login'
-                    border: (10, 10, 10, 10)
+                    border: (20, 20, 20, 20)
                     color: (1,1,1)
-                    font_size: 24
+                    font_size: 20
+                    font_name: 'Inter-SemiBold'
 
                     on_release: root.do_login(login.text, password.text)
-                
+
+<SignupScreen>
+    name: "signupScreen"
+    canvas.before:
+        Color: 
+            rgba: 85/255, 214/255, 190/255, 1
+        Rectangle: 
+            pos: self.pos
+            size: self.size
+
+    BoxLayout
+        id: signup_layout
+        orientation: 'vertical'
+        padding: [7,7,7,7]
+        spacing: 0
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.2
+            spacing: 5
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.2
+
+                RoundedButton:
+                    background_color: (252/255,100/255,113/255, 0)
+                    size_hint_y: 0.9
+                    text: 'Back'
+                    border: (15, 15, 5, 15)
+                    color: (1,1,1)
+                    font_name: 'Inter-Medium'
+                    on_release:
+                        app.root.current = "startScreen"
+
                 Widget:
-                    size_hint_x: 0.25
+                    size_hint_y: 0.1
+
+            Label:
+                text: 'Sign Up'
+                font_size: 30
+                color: [0, 0, 0, 1]
+                font_name: 'Inter-SemiBold'
+                canvas.before:
+                    Color:
+                        rgba: 255/255, 255/255, 255/255, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15, 15, 0, 0]
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 255/255, 255/255, 255/255, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [15, 0, 15, 15]
+
+            BoxLayout:
+                orientation: 'vertical'
+                padding: [0, 0, 0, 5]
+                size_hint_y: 0.3
+
+                Label:
+                    text: 'Username'
+                    font_size: 18
+                    font_name: 'Inter-Medium'
+                    color: [0.4,0.4,0.4,1]
+                    halign: 'left'
+                    text_size: root.width-40, 20
+
+                BoxLayout:
+                    padding: [10,0,10,0]
+                    TextInput:
+                        id: signup
+                        multiline:False
+                        font_size: 18
+
+            BoxLayout:
+                orientation: 'vertical'
+                padding: [0, 5, 0, 0]
+                size_hint_y: 0.3
+                
+                Label:
+                    text: 'Password'
+                    color: [0.4,0.4,0.4,1]
+                    halign: 'left'
+                    font_size: 18
+                    font_name: 'Inter-Medium'
+                    text_size: root.width-40, 20
+
+                BoxLayout:
+                    padding: [10,0,10,0]
+                    TextInput:
+                        id: password
+                        multiline:False
+                        password:True
+                        font_size: 18
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: 0.3
+                padding: [130, 15, 130, 15]
+
+                RoundedButton:
+                    background_color: (125/255,91/255,166/255, 0)
+                    size_hint_x: 0.5
+                    size_hint_y: 0.8
+                    text: 'Next'
+                    border: (20, 20, 20, 20)
+                    color: (1,1,1)
+                    font_size: 20
+                    font_name: 'Inter-SemiBold'
+
+                    on_release: root.do_signup(signup.text, password.text)
+
+<GenderScreen>
+    name: "genderScreen"
+    canvas.before:
+        Color: 
+            rgba: 1, 1, 1, 1
+        Rectangle: 
+            pos: self.pos
+            size: self.size
+
+    BoxLayout
+        id: gender_layout
+        orientation: 'vertical'
+        padding: [7,7,7,7]
+        spacing: 0
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.2
+            spacing: 5
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.2
+
+                RoundedButton:
+                    background_color: (252/255,100/255,113/255, 0)
+                    size_hint_y: 0.9
+                    text: 'Back'
+                    border: (15, 15, 5, 15)
+                    color: (1,1,1)
+                    font_name: 'Inter-Medium'
+                    on_release:
+                        app.root.current = "signupScreen"
+
+                Widget:
+                    size_hint_y: 0.1
+
+            Label:
+                text: 'Select Gender'
+                font_size: 30
+                color: [0, 0, 0, 1]
+                font_name: 'Inter-SemiBold'
+                canvas.before:
+                    Color:
+                        rgba: 255/255, 255/255, 255/255, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15, 15, 0, 0]
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: [self.width/2 - 100, 80, self.width/2 - 100, 80]
+            spacing: 10
+            RoundedButton:
+                background_color: (100/255,97/255,240/255, 0)
+                size_hint: None, None
+                size: 200, 45
+                text: 'Male'
+                border: (20, 20, 20, 20)
+                color: (1,1,1)
+                font_size: 20
+                font_name: 'Inter-SemiBold'
+
+                on_release: root.do_select('Male')
+            
+            RoundedButton:
+                background_color: (242/255,109/255,221/255, 0)
+                size_hint: None, None
+                size: 200, 45
+                text: 'Female'
+                border: (20, 20, 20, 20)
+                color: (1,1,1)
+                font_size: 20
+                font_name: 'Inter-SemiBold'
+
+                on_release: root.do_select('Female')
+
+<HomeScreen>:
+    name: "homeScreen"
+
+    Image:
+        source: ("asset/img/Home_bg.png")
+    
+    GridLayout:
+        cols: 3
+        Widget:
+            
+        GridLayout:
+            cols: 1
+            size_hint_x: None
+            width: 350
+            padding: 0
+
+            Widget:
+                size_hint_y: None
+                height: 20
+
+            Label:
+                id: title
+                text: str(root.username)
+                color: (0, 0, 0)
+                font_size: 40
+                font_name: 'Inter-Bold'
+
+            Widget:
+                size_hint_y: None
+                height: 10
+
+            RoundedButton:
+                background_color: (125/255,91/255,166/255, 0)
+                size_hint_y: 0.7
+                text: 'Log In'
+                border: (20, 20, 20, 20)
+                color: (0,0,0)
+                font_name: 'Inter-SemiBold'
+                font_size: 15
+                on_release:
+                    app.root.current = "loginScreen"
+
+            Widget:
+                size_hint_y: None
+                height: 20
+            
+            RoundedButton:
+                background_color: (252/255,100/255,113/255, 0)
+                size_hint_y: 0.7
+                text: 'Sign Up'
+                border: (20, 20, 20, 20)
+                color: (0,0,0)
+                font_name: 'Inter-SemiBold'
+                font_size: 15
+                on_release:
+                    app.root.current = "signupScreen"
+
+            Widget:
+                
+
+        Widget:
 
 <RoundedButton@Button>
     background_normal: ''
