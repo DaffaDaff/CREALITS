@@ -156,6 +156,7 @@ WindowManager:
                         id: login
                         multiline:False
                         font_size: 18
+                        on_focus: root.on_focus(self, self.focus)
 
             BoxLayout:
                 orientation: 'vertical'
@@ -177,6 +178,7 @@ WindowManager:
                         multiline:False
                         password:True
                         font_size: 18
+                        on_focus: root.on_focus(self, self.focus)
 
             Label:
                 id: status
@@ -283,6 +285,7 @@ WindowManager:
                         id: signup
                         multiline:False
                         font_size: 18
+                        on_focus: root.on_focus(self, self.focus)
 
             BoxLayout:
                 orientation: 'vertical'
@@ -304,6 +307,7 @@ WindowManager:
                         multiline:False
                         password:True
                         font_size: 18
+                        on_focus: root.on_focus(self, self.focus)
 
             Label:
                 id: status
@@ -551,6 +555,8 @@ WindowManager:
                         id: age
                         multiline:False
                         font_size: 18
+                        input_filter: 'int'
+                        on_focus: root.on_focus(self, self.focus, True)
 
             BoxLayout:
                 orientation: 'vertical'
@@ -571,6 +577,8 @@ WindowManager:
                         id: weight
                         multiline:False
                         font_size: 18
+                        input_filter: 'int'
+                        on_focus: root.on_focus(self, self.focus, True)
 
             BoxLayout:
                 orientation: 'horizontal'

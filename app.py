@@ -1,4 +1,15 @@
 import kivy
+from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.properties import StringProperty, NumericProperty
+from kivy.uix.image import Image
+from kivy.clock import Clock
+from kivy.uix.widget import Widget
+from kivy.graphics import Line, Color
+from kivy.graphics.texture import Texture
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.vkeyboard import VKeyboard
+import numpy as np
+import cv2
 
 scale = 1
 width = 480 *scale
@@ -20,17 +31,6 @@ LabelBase.register(name='Inter-SemiBold',
 LabelBase.register(name='Inter-Medium', 
                    fn_regular='asset/font/Inter-Medium.ttf')
 
-from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import StringProperty, NumericProperty
-from kivy.uix.image import Image
-from kivy.clock import Clock
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.widget import Widget
-from kivy.graphics import Line, Color, Rotate
-from kivy.graphics.texture import Texture
-import numpy as np
-import cv2
-
 class WindowManager(ScreenManager):
     pass
 
@@ -38,6 +38,18 @@ class StartScreen(Screen):
     pass
 
 class LoginScreen(Screen):
+    def on_enter(self, *args):
+        self.keyboard = Keyboard()
+        return super().on_enter(*args)
+    
+    def on_focus(self, instance, value, is_numeric=False):
+        if value:
+            self.add_widget(self.keyboard)
+            self.keyboard.keyboard.setup_mode_dock()
+            self.keyboard.input = instance
+        else:
+            self.remove_widget(self.keyboard)
+
     def do_login(self, loginText, passwordText):
         app = App.get_running_app()
 
@@ -57,8 +69,18 @@ class LoginScreen(Screen):
 
         app.config.write()
     
-
 class SignupScreen(Screen):
+    def on_enter(self, *args):
+        self.keyboard = Keyboard()
+        return super().on_enter(*args)
+    
+    def on_focus(self, instance, value, is_numeric=False):
+        if value:
+            self.add_widget(self.keyboard)
+            self.keyboard.keyboard.setup_mode_dock()
+            self.keyboard.input = instance
+        else:
+            self.remove_widget(self.keyboard)
     def do_signup(self, signupText, passwordText):
         app = App.get_running_app()
 
@@ -98,6 +120,19 @@ class HomeScreen(Screen):
         self.username = f'Welcome, {app.username}'
 
 class AgeScreen(Screen):
+    def on_enter(self, *args):
+        self.keyboard = Keyboard()
+        return super().on_enter(*args)
+    
+    def on_focus(self, instance, value, is_numeric=False):
+        if value:
+            self.add_widget(self.keyboard)
+            self.keyboard.keyboard.setup_mode_dock()
+            self.keyboard.input = instance
+            self.keyboard.is_numeric = is_numeric
+        else:
+            self.remove_widget(self.keyboard)
+
     def start(self, age, weight):
         app = App.get_running_app()
 
@@ -149,6 +184,7 @@ class SpinningLoader(Widget):
 class LoadingScreen(Screen):
     def on_pre_enter(self):
         self.layout = self.ids['layout']
+        
         self.layout.add_widget(SpinningLoader(0, 10, (0.6, 0.6, 0.6, 1)))
         self.layout.add_widget(SpinningLoader(72, 82, (0.6, 0.6, 0.6, 1)))
         self.layout.add_widget(SpinningLoader(144, 154, (0.6, 0.6, 0.6, 1)))
@@ -157,6 +193,33 @@ class LoadingScreen(Screen):
 
     def on_enter(self):
         pass
+
+class Keyboard(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.input = None
+        self.is_numeric = False
+
+        self.keyboard = VKeyboard(on_key_up = self.key_up)
+
+        self.add_widget(self.keyboard)
+        
+
+    def key_up(self, keyboard, keycode, *args):
+        if not self.input:
+            return
+
+        if isinstance(keycode, tuple):
+            keycode = keycode[1]
+        
+        if keycode == 'backspace':
+            self.input.text = self.input.text[:-1]
+        elif keycode == 'spacebar':
+            self.input.text = f'{self.input.text} '
+        elif len(keycode) == 1:
+            if self.is_numeric and not keycode.isnumeric():
+                return
+            self.input.text = f'{self.input.text}{keycode}'
 
 from kivy.lang import Builder
 kv = Builder.load_file('app.kv')
