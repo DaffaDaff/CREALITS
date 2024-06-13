@@ -7,7 +7,9 @@ WindowManager:
     SignupScreen:
     GenderScreen:
     HomeScreen:
-        
+    AgeScreen:
+    CameraScreen:
+    LoadingScreen:
     
 
 <StartScreen>:
@@ -176,10 +178,18 @@ WindowManager:
                         password:True
                         font_size: 18
 
+            Label:
+                id: status
+                text: ''
+                font_size: 15
+                color: [1, 0, 0, 1]
+                font_name: 'Inter-SemiBold'
+                size_hint_y: 0.1
+
             BoxLayout:
                 orientation: 'horizontal'
                 size_hint_y: 0.3
-                padding: [130, 15, 130, 15]
+                padding: [130, 0, 130, 10]
 
                 RoundedButton:
                     background_color: (125/255,91/255,166/255, 0)
@@ -295,10 +305,18 @@ WindowManager:
                         password:True
                         font_size: 18
 
+            Label:
+                id: status
+                text: ''
+                font_size: 15
+                color: [1, 0, 0, 1]
+                font_name: 'Inter-SemiBold'
+                size_hint_y: 0.1
+
             BoxLayout:
                 orientation: 'horizontal'
                 size_hint_y: 0.3
-                padding: [130, 15, 130, 15]
+                padding: [130, 0, 130, 10]
 
                 RoundedButton:
                     background_color: (125/255,91/255,166/255, 0)
@@ -425,13 +443,13 @@ WindowManager:
             RoundedButton:
                 background_color: (125/255,91/255,166/255, 0)
                 size_hint_y: 0.7
-                text: 'Log In'
+                text: 'Start'
                 border: (20, 20, 20, 20)
-                color: (0,0,0)
+                color: (1,1,1)
                 font_name: 'Inter-SemiBold'
                 font_size: 15
                 on_release:
-                    app.root.current = "loginScreen"
+                    app.root.current = "ageScreen"
 
             Widget:
                 size_hint_y: None
@@ -440,9 +458,9 @@ WindowManager:
             RoundedButton:
                 background_color: (252/255,100/255,113/255, 0)
                 size_hint_y: 0.7
-                text: 'Sign Up'
+                text: 'History'
                 border: (20, 20, 20, 20)
-                color: (0,0,0)
+                color: (1,1,1)
                 font_name: 'Inter-SemiBold'
                 font_size: 15
                 on_release:
@@ -452,6 +470,198 @@ WindowManager:
                 
 
         Widget:
+
+<AgeScreen>
+    name: "ageScreen"
+    canvas.before:
+        Color: 
+            rgba: 1, 1, 1, 1
+        Rectangle: 
+            pos: self.pos
+            size: self.size
+
+    BoxLayout
+        id: age_layout
+        orientation: 'vertical'
+        padding: [7,7,7,7]
+        spacing: 0
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.2
+            spacing: 5
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.2
+
+                RoundedButton:
+                    background_color: (252/255,100/255,113/255, 0)
+                    size_hint_y: 0.9
+                    text: 'Back'
+                    border: (5, 15, 15, 15)
+                    color: (1,1,1)
+                    font_name: 'Inter-Medium'
+                    on_release:
+                        app.root.current = "homeScreen"
+
+                Widget:
+                    size_hint_y: 0.1
+
+            Label:
+                text: ''
+                font_size: 30
+                color: [0, 0, 0, 1]
+                font_name: 'Inter-SemiBold'
+                canvas.before:
+                    Color:
+                        rgba: 255/255, 255/255, 255/255, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15, 15, 0, 0]
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 255/255, 255/255, 255/255, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [15, 0, 15, 15]
+
+            BoxLayout:
+                orientation: 'vertical'
+                padding: [0, 0, 0, 5]
+                size_hint_y: 0.3
+
+                Label:
+                    text: 'Age'
+                    font_size: 18
+                    font_name: 'Inter-Medium'
+                    color: [0.4,0.4,0.4,1]
+                    halign: 'left'
+                    text_size: root.width-40, 20
+
+                BoxLayout:
+                    padding: [10,0,10,0]
+                    TextInput:
+                        id: age
+                        multiline:False
+                        font_size: 18
+
+            BoxLayout:
+                orientation: 'vertical'
+                padding: [0, 5, 0, 0]
+                size_hint_y: 0.3
+                
+                Label:
+                    text: 'Weight'
+                    color: [0.4,0.4,0.4,1]
+                    halign: 'left'
+                    font_size: 18
+                    font_name: 'Inter-Medium'
+                    text_size: root.width-40, 20
+
+                BoxLayout:
+                    padding: [10,0,10,0]
+                    TextInput:
+                        id: weight
+                        multiline:False
+                        font_size: 18
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: 0.3
+                padding: [130, 15, 130, 15]
+
+                RoundedButton:
+                    background_color: (125/255,91/255,166/255, 0)
+                    size_hint_x: 0.5
+                    size_hint_y: 0.8
+                    text: 'Start'
+                    border: (20, 20, 20, 20)
+                    color: (1,1,1)
+                    font_size: 20
+                    font_name: 'Inter-SemiBold'
+
+                    on_release: root.start(age.text, weight.text)
+
+<CameraScreen>
+    name: 'cameraScreen'
+    Image:
+        texture: root.img.texture
+
+    BoxLayout
+        id: age_layout
+        orientation: 'vertical'
+        padding: [7,7,7,7]
+        spacing: 0
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.2
+            spacing: 5
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.2
+
+                RoundedButton:
+                    background_color: (252/255,100/255,113/255, 0)
+                    size_hint_y: 1
+                    text: 'Back'
+                    border: (5, 15, 15, 15)
+                    color: (1,1,1)
+                    font_name: 'Inter-Medium'
+                    on_release:
+                        app.root.current = "ageScreen"
+
+                Widget:
+                    size_hint_y: 0.1
+
+            Widget:
+        Widget:
+
+        BoxLayout:
+            orientation: 'horizontal'
+            Widget:
+            RoundedButton:
+                background_color: (1,7/255,7/255, 0)
+                size_hint: None, None
+                size: 60, 60
+                border: (50, 50, 50, 50)
+                color: (1,1,1)
+                on_release:
+                    root.capture()
+            Widget:
+
+<LoadingScreen>
+    name: 'loadingScreen'
+    canvas.before:
+        Color:
+            rgb: 1,1,1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            Widget:
+            Label:
+                text: 'Analyzing Data'
+                color: (0, 0, 0)
+                font_size: 40
+                font_name: 'Inter-SemiBold'
+            Widget:
+
+        FloatLayout:
+            id: layout
+
+
 
 <RoundedButton@Button>
     background_normal: ''
