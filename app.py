@@ -10,6 +10,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.vkeyboard import VKeyboard
 import numpy as np
 import cv2
+from picamera2 import Picamera2, Preview
 
 scale = 1
 width = 480 *scale
@@ -150,19 +151,30 @@ class CameraScreen(Screen):
     img = Image()
 
     def on_pre_enter(self):
-        self.cap = cv2.VideoCapture(0)
+        #self.cap = cv2.VideoCapture(0)
+        self.camera = Picamera2()
+        config = self.camera.create_preview_configuration(main={"size": (480, 320)})
+        self.camera.configure(config)
+        self.camera.start_preview(Preview.NULL)
+        self.camera.start()
         Clock.schedule_interval(self.update, 1.0 / 30)
 
     def update(self, dt):
-        ret, frame = self.cap.read()
-        if ret:
-            buf1 = cv2.flip(frame, 0)
-            buf = buf1.tostring()
-            image_texture = Texture.create(
-                size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-            image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
-            
-            self.img.texture = image_texture
+        #ret, frame = self.cap.read()
+        #if ret:
+        #    buf1 = cv2.flip(frame, 0)
+        #    buf = buf1.tostring()
+        #    image_texture = Texture.create(
+        #        size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        #    image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
+        #    
+        #    self.img.texture = image_texture
+        frame = self.camera.capture_array()
+        buf = frame.tobytes()
+        image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='rgb')
+        image_texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
+        self.img.texture = image_texture
+
 
     def capture(self):
         ret, frame = self.cap.read()
