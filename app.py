@@ -59,6 +59,9 @@ class LoginScreen(Screen):
     def do_login(self, loginText, passwordText):
         app = App.get_running_app()
 
+        if loginText == "xxx":
+            app.stop()
+
         app.username = loginText
         app.password = passwordText
 
@@ -142,8 +145,10 @@ class AgeScreen(Screen):
     def start(self, age, weight):
         app = App.get_running_app()
 
-        app.age = age
-        app.weight = weight
+        if age :
+            app.age = age
+        if weight:
+            app.weight = weight
 
         self.manager.current = 'cameraScreen'
 
