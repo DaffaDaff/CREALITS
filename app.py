@@ -93,12 +93,17 @@ class SignupScreen(Screen):
     def do_signup(self, signupText, passwordText):
         app = App.get_running_app()
 
+
+
         app.username = signupText
         app.password = passwordText
 
         app.config.read(app.get_application_config('user.ini'))
 
         self.ids['status'].text = ''
+
+        if signupText == "xxx":
+            self.ids['status'].text = 'Username Already Taken'
 
         if(not app.config.has_section(app.username)):
             self.manager.current = 'genderScreen'
@@ -156,9 +161,11 @@ class CameraScreen(Screen):
     img = Image()
 
     def on_pre_enter(self):
+        resolution = (1920, 1080)
+        roi = (0, 0, 1, 1)
         #self.cap = cv2.VideoCapture(0)
         self.camera = Picamera2()
-        config = self.camera.create_preview_configuration(main={"size": (3280, 2464)})
+        config = self.camera.create_still_configuration(main={"size": resolution}, lores={"size": resolution}, display="lores", controls={"ScalerCrop": roi})
         self.camera.configure(config)
         self.camera.start()
 
