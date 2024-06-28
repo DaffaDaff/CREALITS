@@ -158,7 +158,7 @@ class CameraScreen(Screen):
     def on_pre_enter(self):
         #self.cap = cv2.VideoCapture(0)
         self.camera = Picamera2()
-        config = self.camera.create_preview_configuration(main={"size": (width, height)})
+        config = self.camera.create_preview_configuration(main={"size": (3280, 2464)})
         self.camera.configure(config)
         self.camera.start()
 
@@ -176,6 +176,7 @@ class CameraScreen(Screen):
         #    self.img.texture = image_texture
         frame = self.camera.capture_array()
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        #frame = cv2.resize(frame, (width, height))
         #buf = frame.tobytes()
         #image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='rgb')
         #image_texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
