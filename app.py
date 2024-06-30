@@ -187,8 +187,12 @@ class CameraScreen(Screen):
 
         contours, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+        i = 0
         for contour in contours:
             if len(contour) > 0:
+                i+=1
+                if(i==8):
+                    continue
                 (x, y), radius = cv2.minEnclosingCircle(contour)
                 center = (int(x), int(y))
                 radius = int(radius)
