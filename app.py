@@ -175,22 +175,26 @@ class CameraScreen(Screen):
         Clock.schedule_interval(self.update, 1.0 / 30)
 
     def update(self, dt):
-        #ret, frame = self.cap.read()
-        #if ret:
-        #    buf1 = cv2.flip(frame, 0)
-        #    buf = buf1.tostring()
-        #    image_texture = Texture.create(
-        #        size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-        #    image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
-        #    
-        #    self.img.texture = image_texture
+        # CAPTURE
         frame = self.camera.capture_array()
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         frame = cv2.resize(frame, (width, height))
-        #buf = frame.tobytes()
-        #image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='rgb')
-        #image_texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
-        #self.img.texture = image_texture
+
+        # CONTOUR
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+
+        contours, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            if len(contour) > 0:
+                (x, y), radius = cv2.minEnclosingCircle(contour)
+                center = (int(x), int(y))
+                radius = int(radius)
+                cv2.circle(frame, center, radius, (0, 255, 0), 2)
+
+        # DISPLAY
         buf = frame.tostring()
         image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
         image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
