@@ -11,6 +11,7 @@ from kivy.uix.vkeyboard import VKeyboard
 import numpy as np
 import cv2
 from picamera2 import Picamera2
+import os.path
 
 scale = 1
 width = 480 *scale
@@ -161,13 +162,15 @@ class CameraScreen(Screen):
     img = Image()
 
     def on_pre_enter(self):
-        resolution = (1920, 1080)
-        roi = (0, 0, 1, 1)
+        resolution = (3280, 2464)
+        roi = (0, 0, 3280, 2464)
         #self.cap = cv2.VideoCapture(0)
         self.camera = Picamera2()
-        config = self.camera.create_still_configuration(main={"size": resolution}, lores={"size": resolution}, display="lores", controls={"ScalerCrop": roi})
+        config = self.camera.create_still_configuration(buffer_count=4, main={"size": resolution}, lores={"size": resolution}, display="lores", controls={"ScalerCrop": roi})
         self.camera.configure(config)
         self.camera.start()
+
+        #self.camera.set_controls({"AfMode": 1 ,"AfTrigger": 0})
 
         Clock.schedule_interval(self.update, 1.0 / 30)
 
@@ -195,10 +198,15 @@ class CameraScreen(Screen):
         self.img.texture = image_texture
 
     def capture(self):
-        ret, frame = self.cap.read()
-        if ret:
-            App.get_running_app().img = frame
-            self.manager.current = 'loadingScreen'
+        frame = self.camera.capture_array()
+        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        frame = cv2.resize(frame, (width, height))
+        
+        i = 0
+        while os.path.isfile(f'/home/pi/CREALITS/train_data/{i}.jpeg'):
+              i+=1
+        cv2.imwrite(f'/home/pi/CREALITS/train_data/{i}.jpeg', frame)
+        #self.manager.current = 'loadingScreen'
 
 class SpinningLoader(Widget):
     def __init__(self, start, end, col, **kwargs):
