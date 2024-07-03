@@ -163,6 +163,3 @@ cython_debug/
 
 # config file
 .ini
-
-# Training Folder
-train_data/

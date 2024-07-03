@@ -10,7 +10,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.vkeyboard import VKeyboard
 import numpy as np
 import cv2
-from picamera2 import Picamera2
+#from picamera2 import Picamera2
 import os.path
 
 scale = 1
@@ -165,9 +165,9 @@ class CameraScreen(Screen):
         resolution = (3280, 2464)
         roi = (0, 0, 3280, 2464)
         #self.cap = cv2.VideoCapture(0)
-        self.camera = Picamera2()
-        config = self.camera.create_still_configuration(buffer_count=4, main={"size": resolution}, lores={"size": resolution}, display="lores", controls={"ScalerCrop": roi})
-        self.camera.configure(config)
+        #self.camera = Picamera2()
+        #config = self.camera.create_still_configuration(buffer_count=4, main={"size": resolution}, lores={"size": resolution}, display="lores", controls={"ScalerCrop": roi})
+        #self.camera.configure(config)
         self.camera.start()
 
         #self.camera.set_controls({"AfMode": 1 ,"AfTrigger": 0})
@@ -180,35 +180,41 @@ class CameraScreen(Screen):
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         frame = cv2.resize(frame, (width, height))
 
-        # CONTOUR
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        size = 34
+        centers = [[226,276], [327, 227], [123,224], [341, 122], [128, 113], [244, 58]]
 
-        _, binary = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
-
-        contours, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-        i = 0
-        for contour in contours:
-            if len(contour) > 0:
-                i+=1
-                if(i==8):
-                    continue
-                (x, y), radius = cv2.minEnclosingCircle(contour)
-                center = (int(x), int(y))
-                radius = int(radius)
-                cv2.circle(frame, center, radius, (0, 255, 0), 2)
+        for center in centers:
+            cv2.circle(frame, center, size, (0, 0, 255), 2)
 
         # DISPLAY
         buf = frame.tostring()
         image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-        image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
+        image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte') 
         
         self.img.texture = image_texture
 
     def capture(self):
+        app = App.get_running_app()
         frame = self.camera.capture_array()
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
         frame = cv2.resize(frame, (width, height))
+
+        app.RGBs = []
+        size = 34
+        centroid = [[226,276], [327, 227], [123,224], [341, 122], [128, 113], [244, 58]]
+
+        for center in centroid:
+            cv2.circle(frame, center, size, (0, 0, 255), 2)
+
+            start_x = max(center[0] - size // 2, 0)
+            start_y = max(center[1] - size // 2, 0)
+            end_x = min(center[0] + size // 2, frame.shape[1])
+            end_y = min(center[1] + size // 2, frame.shape[0])
+
+            cropped = frame[start_y:end_y, start_x:end_x]
+
+            mean_color = cv2.mean(cropped)[:3]
+            app.RGBs.append(mean_color)
         
         i = 0
         while os.path.isfile(f'/home/pi/CREALITS/train_data/{i}.jpeg'):
@@ -272,6 +278,13 @@ class Keyboard(Widget):
                 return
             self.input.text = f'{self.input.text}{keycode}'
 
+class PreviewScreen(Screen):
+    def on_pre_enter(self):
+        app = App.get_running_app()
+
+        for i in range(6):
+            self.ids[f'rgb{i}'].text = str(app.RGBs[i])
+
 from kivy.lang import Builder
 kv = Builder.load_file('app.kv')
 
@@ -283,6 +296,7 @@ class CrealitsApp(App):
     age = NumericProperty(0)
     weight = NumericProperty(0)
     img = np.zeros(2)
+    RGBs = [[255,0,0], [0,255,0], [0,0,255], [0,255,255], [255,0,255], [255,255,0]]
 
     def build(self):
         return kv

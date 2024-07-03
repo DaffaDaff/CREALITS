@@ -10,6 +10,7 @@ WindowManager:
     AgeScreen:
     CameraScreen:
     LoadingScreen:
+    PreviewScreen
     
 
 <StartScreen>:
@@ -54,7 +55,7 @@ WindowManager:
                 font_name: 'Inter-SemiBold'
                 font_size: 15
                 on_release:
-                    app.root.current = "cameraScreen"
+                    app.root.current = "preiewScreen"
 
             Widget:
                 size_hint_y: None
@@ -669,6 +670,60 @@ WindowManager:
         FloatLayout:
             id: layout
 
+<PreviewScreen>
+    name: "preiewScreen"
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: rgb0
+                    text: ''
+
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: rgb1
+                    text: ''
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: rgb2
+                    text: ''
+
+
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: rgb3
+                    text: ''
+
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: rgb4
+                    text: ''
+
+
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    id: rgb5
+                    text: ''
 
 
 <RoundedButton@Button>
