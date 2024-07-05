@@ -10,7 +10,8 @@ WindowManager:
     AgeScreen:
     CameraScreen:
     LoadingScreen:
-    PreviewScreen
+    PreviewScreen:
+    CalibrationScreen:
     
 
 <StartScreen>:
@@ -672,14 +673,17 @@ WindowManager:
 
 <PreviewScreen>
     name: "preiewScreen"
+    Image:
+        source: ("asset/img/Preview_bg.png")
     BoxLayout:
         orientation: 'vertical'
-        padding: 10
         spacing: 10
+        padding: [30, 10, 30, 10]
 
         BoxLayout:
             orientation: 'horizontal'
             spacing: 10
+            size_hint_y: 0.4
 
             BoxLayout:
                 orientation: 'vertical'
@@ -704,6 +708,7 @@ WindowManager:
         BoxLayout:
             orientation: 'horizontal'
             spacing: 10
+            size_hint_y: 0.4
 
             BoxLayout:
                 orientation: 'vertical'
@@ -724,6 +729,34 @@ WindowManager:
                 Label:
                     id: rgb5
                     text: ''
+
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 10
+            size_hint_y: 0.2
+            padding: [0, 0, 0, 20]
+
+            BoxLayout:
+                size_hint_x: 0.2
+
+            RoundedButton:
+                size_hint_x: 0.8
+                background_color: (125/255,91/255,166/255, 0)
+                border: (25, 25, 25, 25)
+                color: (1,1,1)
+                text: 'Next'
+                on_release:
+                    app.root.current = "loadingScreen"
+
+            BoxLayout:
+                size_hint_x: 0.2
+
+<CalibrationScreen>
+    name: "calibrationScreen"
+
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
 
 
 <RoundedButton@Button>

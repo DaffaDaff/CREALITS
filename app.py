@@ -6,12 +6,15 @@ from kivy.clock import Clock
 from kivy.uix.widget import Widget
 from kivy.graphics import Line, Color
 from kivy.graphics.texture import Texture
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.vkeyboard import VKeyboard
 import numpy as np
 import cv2
-#from picamera2 import Picamera2
-import os.path
+from picamera2 import Picamera2
+import csv
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+from kivy.garden.graph import Graph, MeshLinePlot
 
 scale = 1
 width = 480 *scale
@@ -94,8 +97,6 @@ class SignupScreen(Screen):
     def do_signup(self, signupText, passwordText):
         app = App.get_running_app()
 
-
-
         app.username = signupText
         app.password = passwordText
 
@@ -110,7 +111,6 @@ class SignupScreen(Screen):
             self.manager.current = 'genderScreen'
         else:
             self.ids['status'].text = 'Username Already Taken'
-
 
         app.config.write()
 
@@ -215,12 +215,8 @@ class CameraScreen(Screen):
 
             mean_color = cv2.mean(cropped)[:3]
             app.RGBs.append(mean_color)
-        
-        i = 0
-        while os.path.isfile(f'/home/pi/CREALITS/train_data/{i}.jpeg'):
-              i+=1
-        cv2.imwrite(f'/home/pi/CREALITS/train_data/{i}.jpeg', frame)
-        #self.manager.current = 'loadingScreen'
+
+        self.manager.current = 'previewScreen'
 
 class SpinningLoader(Widget):
     def __init__(self, start, end, col, **kwargs):
@@ -249,7 +245,80 @@ class LoadingScreen(Screen):
         self.layout.add_widget(SpinningLoader(288, 298, (0.6, 0.6, 0.6, 1)))
 
     def on_enter(self):
-        pass
+        app = App.get_running_app()
+        with open('CREALITS_train.csv', mode='a') as csv_file:
+            writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL, lineterminator="\n")
+
+            row = [item for col in app.RGBs for item in col]
+            row.append(app.age)
+            row.append(app.weight)
+            writer.writerow(row)
+            csv_file.close()
+        
+        with open('CREALITS_train.csv', mode='r') as csv_file:
+            reader = list(csv.reader(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL))
+
+            data = np.zeros((len(reader), 6, 3))
+            album = np.zeros((len(reader)))
+            creat = np.zeros((len(reader)))
+
+            for row in range(len(reader)):
+                for i in range(0, 18):
+                    data[row, int(i/3), int(i%3)] = reader[row][i]
+                
+                album[row] = reader[row][18]
+                creat[row] = reader[row][19]
+            
+            csv_file.close()
+            
+        app.model = [LinearRegression(), LinearRegression(), LinearRegression(), LinearRegression(), LinearRegression(), LinearRegression()]
+        app.pred = []
+        app.test = []
+
+        for i in range(6):
+            X = data[:, i, :]
+
+            if i >= 0 and i < 3:
+                y = album
+            else:
+                y = creat
+
+            # Split data into training and test sets
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+            # Create and train the model
+            app.model[i] = LinearRegression()
+            app.model[i].fit(X_train, y_train)
+
+            # # Make predictions
+            y_pred = app.model[i].predict(X_test)
+
+            # # Evaluate the model
+            mse = mean_squared_error(y_test, y_pred)
+            r2 = r2_score(y_test, y_pred)
+
+            predicted_values = y_pred
+
+            # Create a graph widget
+            app.graph_widget = Graph(
+                xlabel='Predicted Values', ylabel='R/G/B', x_ticks_minor=1,
+                x_ticks_major=1, y_ticks_major=1,
+                y_grid_label=True, x_grid_label=True, padding=5,
+                xlog=False, ylog=False, x_grid=True, y_grid=True, xmin=0, xmax=10, ymin=0, ymax=255
+            )
+            # Create a plot
+            plot = MeshLinePlot(color=[1, 0, 0, 1])
+            plot.points = list(zip(predicted_values, X_test[:][0]))
+            plot = MeshLinePlot(color=[0, 1, 0, 1])
+            plot.points = list(zip(predicted_values, X_test[:][1]))
+            plot = MeshLinePlot(color=[0, 0, 1, 1])
+            plot.points = list(zip(predicted_values, X_test[:][2]))
+            app.graph_widget.add_plot(plot)
+
+        self.manager.current = "calibrationScreen"
+
+
+
 
 class Keyboard(Widget):
     def __init__(self, **kwargs):
@@ -285,6 +354,14 @@ class PreviewScreen(Screen):
         for i in range(6):
             self.ids[f'rgb{i}'].text = str(app.RGBs[i])
 
+class CalibrationScreen(Screen):
+    def on_enter(self, *args):
+        app = App.get_running_app()
+
+        self.ids['layout'].add_widget(app.graph_widget)
+
+        return super().on_enter(*args)
+
 from kivy.lang import Builder
 kv = Builder.load_file('app.kv')
 
@@ -301,5 +378,14 @@ class CrealitsApp(App):
     def build(self):
         return kv
 
+import subprocess
+import sys
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
 if __name__ == "__main__":
+    install('scikit-learn')
+    install('kivy-garden')
+    install('kivy-garden.graph')
     CrealitsApp().run()
