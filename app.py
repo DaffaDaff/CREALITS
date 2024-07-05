@@ -201,6 +201,7 @@ class CameraScreen(Screen):
 
         app.RGBs = []
         size = 34
+        # [bottom middle], [bottom right], [bottom left], [top right], [top left], [top middle]
         centroid = [[226,276], [327, 227], [123,224], [341, 122], [128, 113], [244, 58]]
 
         for center in centroid:
@@ -269,18 +270,34 @@ class LoadingScreen(Screen):
                 album[row] = reader[row][18]
                 creat[row] = reader[row][19]
             
+            converted_data = np.zeros((len(reader), 2, 3))
+
+            for i in range(len(reader)):
+                converted_data[i, 0, 0] = (data[i, 0, 0] + data[i, 1, 0] + data[i, 2, 0]) / 3 
+                converted_data[i, 0, 1] = (data[i, 0, 1] + data[i, 1, 1] + data[i, 2, 1]) / 3 
+                converted_data[i, 0, 2] = (data[i, 0, 2] + data[i, 1, 2] + data[i, 2, 2]) / 3 
+                converted_data[i, 1, 0] = (data[i, 3, 0] + data[i, 4, 0] + data[i, 5, 0]) / 3 
+                converted_data[i, 1, 1] = (data[i, 3, 1] + data[i, 4, 1] + data[i, 5, 1]) / 3 
+                converted_data[i, 1, 2] = (data[i, 3, 2] + data[i, 4, 2] + data[i, 5, 2]) / 3 
+
             csv_file.close()
             
         app.model = [LinearRegression(), LinearRegression(), LinearRegression(), LinearRegression(), LinearRegression(), LinearRegression()]
         app.pred = []
         app.test = []
 
-        for i in range(6):
+        
+
+        for i in range(2):
             X = data[:, i, :]
 
-            if i >= 0 and i < 3:
+            if i == 0:
+                if album == 0:
+                    continue
                 y = album
             else:
+                if creat == 0:
+                    continue
                 y = creat
 
             # Split data into training and test sets
