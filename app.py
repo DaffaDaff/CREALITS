@@ -164,10 +164,10 @@ class CameraScreen(Screen):
     def on_pre_enter(self):
         resolution = (3280, 2464)
         roi = (0, 0, 3280, 2464)
-        #self.cap = cv2.VideoCapture(0)
-        #self.camera = Picamera2()
-        #config = self.camera.create_still_configuration(buffer_count=4, main={"size": resolution}, lores={"size": resolution}, display="lores", controls={"ScalerCrop": roi})
-        #self.camera.configure(config)
+
+        self.camera = Picamera2()
+        config = self.camera.create_still_configuration(buffer_count=4, main={"size": resolution}, lores={"size": resolution}, display="lores", controls={"ScalerCrop": roi})
+        self.camera.configure(config)
         self.camera.start()
 
         #self.camera.set_controls({"AfMode": 1 ,"AfTrigger": 0})
