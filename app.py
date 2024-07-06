@@ -369,7 +369,7 @@ class PreviewScreen(Screen):
         app = App.get_running_app()
 
         for i in range(6):
-            self.ids[f'rgb{i}'].text = str(app.RGBs[i])
+            self.ids[f'rgb{i}'].text = str(int(app.RGBs[i]))
 
 class CalibrationScreen(Screen):
     def on_enter(self, *args):
