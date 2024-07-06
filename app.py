@@ -215,6 +215,7 @@ class CameraScreen(Screen):
             cropped = frame[start_y:end_y, start_x:end_x]
 
             mean_color = cv2.mean(cropped)[:3]
+            mean_color = [int(c) for c in mean_color]
             app.RGBs.append(mean_color)
 
         self.manager.current = 'previewScreen'
@@ -369,7 +370,7 @@ class PreviewScreen(Screen):
         app = App.get_running_app()
 
         for i in range(6):
-            self.ids[f'rgb{i}'].text = str(int(app.RGBs[i]))
+            self.ids[f'rgb{i}'].text = str(app.RGBs[i])
 
 class CalibrationScreen(Screen):
     def on_enter(self, *args):
