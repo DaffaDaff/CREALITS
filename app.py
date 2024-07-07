@@ -361,7 +361,7 @@ class Keyboard(Widget):
         elif keycode == 'spacebar':
             self.input.text = f'{self.input.text} '
         elif len(keycode) == 1:
-            if self.is_numeric and not keycode.isnumeric():
+            if self.is_numeric and not (keycode.isnumeric() or keycode == '.'):
                 return
             self.input.text = f'{self.input.text}{keycode}'
 
