@@ -268,8 +268,8 @@ class LoadingScreen(Screen):
                 for i in range(0, 18):
                     data[row, int(i/3), int(i%3)] = reader[row][i]
                 
-                album[row] = reader[row][18]
-                creat[row] = reader[row][19]
+                album[row] = float(reader[row][18])
+                creat[row] = float(reader[row][19])
             
             converted_data = np.zeros((len(reader), 2, 3))
 
