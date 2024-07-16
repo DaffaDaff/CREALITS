@@ -200,7 +200,7 @@ class CameraScreen(Screen):
         frame = cv2.resize(frame, (width, height))
 
         app.RGBs = []
-        size = 16
+        size = 8
         # [bottom middle], [bottom right], [bottom left], [top right], [top left], [top middle]
         centroid = [[226,276], [327, 227], [123,224], [341, 122], [128, 113], [244, 58]]
 
